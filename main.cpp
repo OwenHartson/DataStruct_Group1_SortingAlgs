@@ -25,6 +25,9 @@ void printVector(vector<int> vec);
 
 void bubbleSort(vector<int> vec);
 
+void quickSort(vector<int> vec, int, int);
+int partition(vector<int> vec, int, int);
+
 //==================== MAIN ====================
 int main(){
     for(int i = 100; i <= 1000; i += 100){
@@ -78,6 +81,7 @@ void determineSort(SORT_TYPES name, vector<int> vec){
             break;
         case QUICK_SORT:
             sortName = "Quick sort";
+            quickSort(vec, 0, static_cast<int>(vec.size() - 1));
             break;
         case BUCKET_SORT:
             sortName = "Bucket sort";
@@ -89,6 +93,50 @@ void determineSort(SORT_TYPES name, vector<int> vec){
     auto finish = high_resolution_clock::now();
     auto duration = duration_cast<nanoseconds>(finish - start);
     cout << sortName << "\t" << duration.count() << " nanoseconds" << "\t\t" << vec.size() << " items" << endl;
+
+    return;
+}
+
+//==================== QUICK SORT ====================
+int partition(vector<int> vec, int start, int end){
+    int pivot = vec[start];
+    int count = 0;
+
+    for(int i = start + 1; i <= end; i++){
+        if(vec[i] <= pivot){
+            count++;
+        }
+    }
+
+    int pivotIndex = start + count;
+    swap(vec[pivotIndex], vec[start]);
+
+    int i = start, j = end;
+
+    while(i < pivotIndex && j > pivotIndex){
+        while(vec[i] <= pivot){
+            i++;
+        }
+
+        while(vec[j] > pivot){
+            j--;
+        }
+
+        if(i < pivotIndex && j > pivotIndex){
+            swap(vec[i++], vec[j--]);
+        }
+    }
+
+    return pivotIndex;
+}
+
+void quickSort(vector<int> vec, int start, int end){
+    vector<int> items = vec;
+    if(start >= end){ return; }
+
+    int p = partition(items, start, end);
+    quickSort(items, start, p - 1);
+    quickSort(items, p+2, end);
 
     return;
 }
