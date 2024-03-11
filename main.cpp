@@ -88,7 +88,7 @@ void determineSort(SORT_TYPES name, vector<int> vec){
 
     auto finish = high_resolution_clock::now();
     auto duration = duration_cast<nanoseconds>(finish - start);
-    cout << sortName << " took " << duration.count() << " nanoseconds to complete." << endl;
+    cout << sortName << "\t" << duration.count() << " nanoseconds" << "\t\t" << vec.size() << " items" << endl;
 
     return;
 }
