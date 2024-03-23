@@ -25,6 +25,13 @@ void printVector(vector<int> vec);
 
 void bubbleSort(vector<int> vec);
 
+void mergeSort(vector<int> &vec, int p, int r);
+void merge(vector<int> &vec, int p, int q, int r);
+
+void insertionSort(vector<int> vec);
+
+void selectionSort(vector<int> vec);
+
 void quickSort(vector<int> vec, int, int);
 int partition(vector<int> vec, int, int);
 
@@ -61,6 +68,11 @@ void printVector(vector<int> vec){
 void determineSort(SORT_TYPES name, vector<int> vec){
     string sortName;
     auto start = high_resolution_clock::now();
+    ///SEE BELOW FOR tempVecMerge/////
+    vector<int> tempVecMerge = vec;
+    /////////////////////////////////
+
+
     switch(name){
         case STD_SORT:
             sort(vec.begin(), vec.end());
@@ -72,12 +84,17 @@ void determineSort(SORT_TYPES name, vector<int> vec){
             break;
         case MERGE_SORT:
             sortName = "Merge sort";
+            //since merge is recursive it needs the vec as a reference
+            //have to make a copy of vec before hand
+            mergeSort(tempVecMerge, 0, static_cast<int>(tempVecMerge.size() - 1));
             break;
         case INSERTION_SORT:
             sortName = "Insertion sort";
+            insertionSort(vec);
             break;
         case SELECTION_SORT:
             sortName = "Selection sort";
+            selectionSort(vec);
             break;
         case QUICK_SORT:
             sortName = "Quick sort";
@@ -164,6 +181,81 @@ void bubbleSort(vector<int> vec){
 
     return;
 }
+
+
+//==================== MERGE SORT ====================
+void mergeSort(vector<int>& vec, int p, int r) {
+    if (p < r) {
+        int q = p + (r - p) / 2;
+
+        mergeSort(vec, p, q);
+        mergeSort(vec, q + 1, r);
+
+        merge(vec, p, q, r);
+    }
+}
+
+void merge(vector<int>& vec, int p, int q, int r) {
+    int n1 = q - p + 1;
+    int n2 = r - q;
+    vector<int> L(n1);
+    vector<int> R(n2);
+
+    for (int i = 0; i < n1; i++)
+        L[i] = vec[p + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = vec[q + 1 + j];
+
+    int i = 0, 
+        j = 0, 
+        k = p;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            vec[k] = L[i];
+            i++;
+        } else {
+            vec[k] = R[j];
+            j++;
+        }
+        
+        k++;
+    }
+}
+
+//==================== INSERTION SORT ====================
+void insertionSort(vector<int> vec){
+    for (size_t i = 1; i < vec.size(); ++i) {
+        int k = vec[i];
+        size_t j = i - 1;
+        while (j > 0 and vec[j] > k) {
+            vec[j+1] = vec[j];
+            j--;
+        }
+        vec[j+1] = k;
+    }
+
+    return;
+}
+
+//==================== SELECTION SORT ====================
+void selectionSort(vector<int> vec){
+    for (size_t i = 0; i < vec.size() - 2; ++i) {
+        size_t minIndex = i;
+        for (size_t j =i+1; j < vec.size() - 1; ++j) {
+            if (vec[j] < vec[minIndex]) {
+                minIndex = j;
+            }
+        }
+        if (minIndex != i) {
+            int temp = vec[i];
+            vec[i] = vec[minIndex];
+            vec[minIndex] = temp;
+        } 
+    }
+
+    return;
+}
+
 
 //==================== FILL VECTOR ====================
 void fillVector(int fillValue, vector<int> & vec){
