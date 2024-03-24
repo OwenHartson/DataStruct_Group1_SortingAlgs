@@ -32,6 +32,8 @@ void insertionSort(vector<int> vec);
 
 void selectionSort(vector<int> vec);
 
+void bucketSort(vector<int> vec);
+
 void quickSort(vector<int> vec, int, int);
 int partition(vector<int> vec, int, int);
 
@@ -102,6 +104,7 @@ void determineSort(SORT_TYPES name, vector<int> vec){
             break;
         case BUCKET_SORT:
             sortName = "Bucket sort";
+            bucketSort(vec);
             break;
         default:
             break;
@@ -209,7 +212,7 @@ void merge(vector<int>& vec, int p, int q, int r) {
     int i = 0, 
         j = 0, 
         k = p;
-    while (i < n1 && j < n2) {
+    while (i < n1 and j < n2) {
         if (L[i] <= R[j]) {
             vec[k] = L[i];
             i++;
@@ -217,7 +220,18 @@ void merge(vector<int>& vec, int p, int q, int r) {
             vec[k] = R[j];
             j++;
         }
-        
+        k++;
+    }
+
+    while (i < n1) {
+        vec[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        vec[k] = R[j];
+        j++;
         k++;
     }
 }
@@ -254,6 +268,29 @@ void selectionSort(vector<int> vec){
     }
 
     return;
+}
+
+//==================== BUCKET SORT ====================
+void bucketSort(vector<int> vec) {
+    if (vec.empty()){
+        return;
+    }
+
+    int max = *max_element(vec.begin(), vec.end());
+
+    vector<vector<int>> buckets(max + 1);
+
+    for (size_t i = 0; i < vec.size(); ++i) {
+        buckets[vec[i]].push_back(vec[i]);
+    }
+
+    int index = 0;
+    for (size_t i = 0; i < buckets.size(); ++i) {
+        sort(buckets[i].begin(), buckets[i].end());
+        for (size_t j = 0; j < buckets[i].size(); ++j) {
+            vec[index++] = buckets[i][j];
+        }
+    }
 }
 
 
